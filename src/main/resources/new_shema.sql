@@ -40,3 +40,10 @@ INSERT INTO DishIngredient (id, id_dish, id_ingredient, quantity_required, unit)
 (3, 2, 3, 1.00, 'KG'),
 (4, 4, 4, 0.30, 'KG'),
 (5, 4, 5, 0.20, 'KG');
+
+SELECT SUM(di.quantity_required * i.price) AS total_cost
+FROM DishIngredient di
+JOIN Ingredient i ON di.id_ingredient = i.id
+WHERE di.id_dish = ?;
+
+SELECT selling_price FROM Dish WHERE id = ?;
