@@ -6,14 +6,14 @@ CREATE TYPE movement_type AS ENUM ('IN', 'OUT');
 CREATE TABLE Dish (
                       id SERIAL PRIMARY KEY,
                       name VARCHAR(255) NOT NULL,
-                      dish_type dish_type,
-                      selling_price NUMERIC
+                      dish_type dish_type NOT NULL,
+                      selling_price NUMERIC(12,2)
 );
 
 CREATE TABLE Ingredient (
                             id SERIAL PRIMARY KEY,
-                            name VARCHAR(255) NOT NULL,
-                            price NUMERIC NOT NULL,
+                            name VARCHAR(255) NOT NULL UNIQUE,
+                            price NUMERIC(12,2) NOT NULL CHECK ( price >= 0 ),
                             category ingredient_category
 );
 
@@ -22,7 +22,8 @@ CREATE TABLE DishIngredient (
                                 id_dish INT REFERENCES Dish(id),
                                 id_ingredient INT REFERENCES Ingredient(id),
                                 quantity_required NUMERIC NOT NULL,
-                                unit unit_type NOT NULL
+                                unit unit_type NOT NULL,
+    UNIQUE (id_dish, id_ingredient)
 );
 
 CREATE TABLE StockMovement (
@@ -31,5 +32,44 @@ CREATE TABLE StockMovement (
                                quantity NUMERIC NOT NULL,
                                type movement_type NOT NULL,
                                unit unit_type NOT NULL,
-                               creation_datetime TIMESTAMP NOT NULL
+                               creation_datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (id)
 );
+
+-- Ingrédients (prix en centimes ou unité monétaire)
+INSERT INTO Ingredient (id, name, price, category) VALUES
+                                                       (1, 'Laitue',   800.00, 'VEGETABLE'),
+                                                       (2, 'Tomate',   600.00, 'VEGETABLE'),
+                                                       (3, 'Poulet',  4500.00, 'MEAT'),
+                                                       (4, 'Chocolat', 4666.67,'OTHER'),   -- ≈1400 / 0.3
+                                                       (5, 'Beurre',   1000.00,'DAIRY');   -- exemple cohérent avec 200 pour 0.2 kg
+
+-- Plats
+INSERT INTO Dish (id, name, dish_type, selling_price) VALUES
+                                                          (1, 'Salade fraîche',     'STARTER',  3500.00),
+                                                          (2, 'Poulet grillé',      'MAIN',    12000.00),
+                                                          (3, 'Riz aux légumes',    'MAIN',    NULL),
+                                                          (4, 'Gâteau au chocolat', 'DESSERT',  8000.00),
+                                                          (5, 'Salade de fruits',   'DESSERT',  NULL);
+
+-- Relations Dish ↔ Ingredient (TD3)
+INSERT INTO DishIngredient (id, id_dish, id_ingredient, quantity_required, unit) VALUES
+                                                                                     (1, 1, 1, 0.20, 'KG'),
+                                                                                     (2, 1, 2, 0.15, 'KG'),
+                                                                                     (3, 2, 3, 1.00, 'KG'),
+                                                                                     (4, 4, 4, 0.30, 'KG'),
+                                                                                     (5, 4, 5, 0.20, 'KG');
+
+-- Mouvements de stock (TD4) – incluant les initiaux + les OUT de test
+INSERT INTO StockMovement (id, id_ingredient, quantity, type, unit, creation_datetime) VALUES
+-- Initiaux (IN)
+( 1, 1,  5.0, 'IN',  'KG', '2024-01-05 08:00:00'),
+( 2, 1,  0.2, 'OUT', 'KG', '2024-01-06 12:00:00'),  -- test TD4
+( 3, 2,  4.0, 'IN',  'KG', '2024-01-05 08:00:00'),
+( 4, 2, 0.15, 'OUT', 'KG', '2024-01-06 12:00:00'),
+( 5, 3, 10.0, 'IN',  'KG', '2024-01-04 09:00:00'),
+( 6, 3,  1.0, 'OUT', 'KG', '2024-01-06 12:00:00'),
+( 7, 4,  3.0, 'IN',  'KG', '2024-01-06 13:00:00'),
+( 8, 4,  0.3, 'OUT', 'KG', '2024-01-06 12:00:00'),  -- attention : OUT avant IN dans le temps ?
+( 9, 5,  2.5, 'IN',  'KG', '2024-01-05 10:00:00'),
+(10, 5,  0.2, 'OUT', 'KG', '2024-01-06 12:00:00');
