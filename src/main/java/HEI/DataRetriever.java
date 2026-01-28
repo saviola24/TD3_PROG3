@@ -1,7 +1,6 @@
 package HEI;
 
 import java.sql.*;
-import java.time.Instant;
 import java.util.*;
 
 public class DataRetriever {
@@ -110,6 +109,9 @@ public class DataRetriever {
 
         return result;
     }
+
+
+
     public void close() {
         DBConnection.closeConnection();
     }
