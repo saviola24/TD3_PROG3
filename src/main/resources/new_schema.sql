@@ -83,3 +83,12 @@ CREATE TABLE IF NOT EXISTS dish_order (
                                           quantity INTEGER NOT NULL CHECK (quantity > 0)
 );
 CREATE INDEX IF NOT EXISTS idx_order_reference ON "order"(reference);
+
+CREATE TABLE restaurant_table (
+                                  id SERIAL PRIMARY KEY,
+                                  number INT NOT NULL UNIQUE
+);
+ALTER TABLE "order"
+    ADD COLUMN id_table INT NOT NULL REFERENCES restaurant_table(id),
+    ADD COLUMN arrival_datetime TIMESTAMP NOT NULL,
+    ADD COLUMN departure_datetime TIMESTAMP NOT NULL;
