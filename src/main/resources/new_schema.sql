@@ -92,3 +92,7 @@ ALTER TABLE "order"
     ADD COLUMN id_table INT NOT NULL REFERENCES restaurant_table(id),
     ADD COLUMN arrival_datetime TIMESTAMP NOT NULL,
     ADD COLUMN departure_datetime TIMESTAMP NOT NULL;
+
+ALTER TABLE restaurant_table
+    ADD COLUMN occupied_from TIMESTAMP,
+    ADD COLUMN occupied_until TIMESTAMP;

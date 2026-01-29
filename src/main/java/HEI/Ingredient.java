@@ -4,12 +4,16 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Ingredient {
     private int id;
     private String name;
     private Double price;
     private IngredientCategory category;
     private List<StockMovement> stockMovementList = new ArrayList<>();
+
+        public Ingredient() {
+        }
 
     public Ingredient(int id, String name, Double price, IngredientCategory category) {
         this.id = id;

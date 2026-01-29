@@ -2,6 +2,7 @@ package HEI;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class DataRetriever {
@@ -163,12 +164,13 @@ public class DataRetriever {
                 throw new SQLException("Aucune table n'a été spécifiée pour cette commande.");
             }
 
-            LocalDateTime from = orderToSave.getCreationDateTime();
+            
+            LocalDateTime from = LocalDateTime.ofInstant(orderToSave.getCreationDateTime(), ZoneId.systemDefault());
             LocalDateTime until = from.plusHours(2);
 
             String sqlCheckTable = """
                 SELECT id, number, occupied_from, occupied_until
-                FROM Table
+                FROM restaurant_table
                 WHERE id = ? AND (occupied_until IS NULL OR ? < occupied_from OR ? > occupied_until)
             """;
 

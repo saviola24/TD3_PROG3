@@ -9,7 +9,7 @@ public class Main {
         DataRetriever dataRetriever = new DataRetriever();
 
         try {
-            // Test 1: Sauvegarder un ingrédient
+            
             Ingredient ingredient = new Ingredient();
             ingredient.setName("Tomate");
             ingredient.setPrice(1.5);
@@ -24,8 +24,8 @@ public class Main {
                 System.out.println(ing);
             }
 
-            // Test 3: Sauvegarder une commande avec une table
-            Table table = new Table(1, 10); // ID = 1, numéro de table = 10
+            
+            Table table = new Table(1, 10);
             Order order = new Order();
             order.setReference("CMD001");
             order.setTotalHt(50.0);
