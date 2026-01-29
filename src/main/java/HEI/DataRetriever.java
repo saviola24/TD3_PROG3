@@ -169,8 +169,8 @@ public class DataRetriever {
             LocalDateTime until = from.plusHours(2);
 
             String sqlCheckTable = """
-                SELECT id, number, occupied_from, occupied_until
-                FROM restaurant_table
+             SELECT id, number, occupied_from, occupied_until
+             FROM restaurant_table
                 WHERE id = ? AND (occupied_until IS NULL OR ? < occupied_from OR ? > occupied_until)
             """;
 
